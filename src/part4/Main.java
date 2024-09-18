@@ -8,6 +8,7 @@ public class Main {
     public static  Scanner request  = new Scanner(System.in);
     static ArrayList<OldPhone> oldPh = new ArrayList<>();
     static ArrayList<NewPhone> newPh = new ArrayList<>();
+    static   ArrayList<MobilePhone> listAllPhone = new ArrayList<>();
 
     //show list menu
     public static void menuList(){
@@ -47,9 +48,13 @@ public class Main {
             case 4:
                 deleteMenu();
                 break;
-//            case 6:
-////                searchPhoneMenu();
-//                break;
+            case 5:
+                arrangePhoneMenu();
+                break;
+            case 6:
+                findMenu();
+                break;
+
             case 9:
                 System.out.println("Chương trình kết thúc!");
                 action = false; // Thoát chương trình
@@ -67,6 +72,18 @@ public class Main {
             listPhone.get(i).output();
         }
         System.out.println("===============================================");
+    }
+
+
+    private static void displayPhoneList(){
+        System.out.println(" =================> Danh sách điện thoại  :" + "<==================");
+        listAllPhone.addAll(oldPh);
+        listAllPhone.addAll(newPh);
+        for (int i = 0; i < listAllPhone.size(); i++) {
+            listAllPhone.get(i).output();
+        }
+        System.out.println("===============================================");
+
     }
 
     //OPTION CHO VIỆC XEM DANH SÁCH
@@ -95,8 +112,7 @@ public class Main {
         switch (optionlist){
             case 1:
                 System.out.println("---All Phones List---");
-                displayPhoneList(newPh , "Mới" );
-                displayPhoneList(oldPh , "Cũ" );
+                displayPhoneList();
 
                 break;
             case 2 :
@@ -233,7 +249,7 @@ public class Main {
 
     //update phone
     public static void updatePhone(String idUpdate) {
-        boolean isNew = idUpdate.startsWith("DTM") ? true : false;
+        boolean isNew = idUpdate.startsWith("DTM") ;
         ArrayList<? extends MobilePhone> listPhoneUpdate = isNew ? newPh : oldPh;
 
         boolean isExistPhone = false;
@@ -254,7 +270,6 @@ public class Main {
 
         displayPhoneList(listPhoneUpdate , isNew ? "Mới" : "Cũ");
     }
-
 
 
     //Delete
@@ -340,9 +355,184 @@ public class Main {
 
 
 
+    //Sắp xếp
+    //menu
+    public static void arrangePhoneMenu(){
+
+        System.out.println("---------Sắp Xếp theo giá---------- ");
+
+        System.out.println("1. Tăng gần  ");
+        System.out.println(" 2. Giảm dần  ");
+        System.out.println(" 3. Trở về menu chính ");
+        System.out.println("Chọn : ");
+
+
+        int choice = request.nextInt();
+        do{
+            if(choice < 1 || choice > 3){
+                System.out.println("chỉ được chọn lựa chọn sẵn có!");
+                choice = request.nextInt();
+            }
+        }while(choice < 1 || choice > 3);
+
+        if(choice == 3 ){
+            return;
+        }
+
+        switch (choice){
+            case 1 :
+                arrangePhoneByPrice(1);
+                break;
+            case 2 :
+                arrangePhoneByPrice(2);
+                break;
+            case 3 :
+                break;
+        }
+    }
+
+    //sắp xếp
+    public static void arrangePhoneByPrice(int option){
+        int n = listAllPhone.size();
+        listAllPhone.addAll(oldPh);
+        listAllPhone.addAll(newPh);
+
+        switch (option){
+            case 1 :
+                //tăng dần
+                // Duyệt qua từng phần tử trong danh sách
+                for (int i = 0; i < n - 1; i++) {
+                    for (int j = i + 1; j < n; j++) {
+                        double priceI = listAllPhone.get(i).getPrice();
+                        double priceJ = listAllPhone.get(j).getPrice();
+
+                        // So sánh giá của phần tử tại i và j
+                        if (priceI > priceJ) {
+                            // Hoán đổi nếu giá của phần tử tại i lớn hơn giá của phần tử tại j
+                            MobilePhone temp = listAllPhone.get(i);
+                            listAllPhone.set(i, listAllPhone.get(j));
+                            listAllPhone.set(j, temp);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < listAllPhone.size(); i++) {
+                    listAllPhone.get(i).output();
+                }
+                break;
+            case 2 :
+                //giảm dần
+                for (int i = 0; i < n - 1; i++) {
+                    for (int j = i + 1; j < n; j++) {
+                        double priceI = listAllPhone.get(i).getPrice();
+                        double priceJ = listAllPhone.get(j).getPrice();
+
+                        // So sánh giá của phần tử tại i và j
+                        if (priceI < priceJ) {
+                            // Hoán đổi nếu giá của phần tử tại i lớn hơn giá của phần tử tại j
+                            MobilePhone temp = listAllPhone.get(i);
+                            listAllPhone.set(i, listAllPhone.get(j));
+                            listAllPhone.set(j, temp);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < listAllPhone.size(); i++) {
+                    listAllPhone.get(i).output();
+                }
+                break;
+            case 3 :
+                break;
+        }
+    }
+
+
+
+    //tìm kiếm
+    //menu
+    public static void findMenu(){
+        System.out.println("-------------Tìm Kiếm--------------------");
+        System.out.println("1. Tìm kiếm tất cả điện thoại");
+        System.out.println("2. Tìm kiếm điện thoại cũ");
+        System.out.println(" 3. Tìm kiếm điện thoại mới");
+        System.out.println(" 4. Trở về menu chính");
+        System.out.println(" Chọn : ");
+
+        int choice = request.nextInt();
+
+        do{
+            if(choice < 1 || choice > 4){
+
+                System.out.println("chỉ lựa chọn đã sẵn có : ");
+                 choice = request.nextInt();
+            }
+        }while (choice < 1 || choice > 4);
+
+
+        switch (choice){
+            case 1 :
+                findByValueMenu(1);
+                break;
+            case 2 :
+                findByValueMenu(2);
+                break;
+                case 3 :
+                    findByValueMenu(3);
+                break;
+            case 4 :
+                break;
+            default:
+                break;
+
+        }
+
+    }
+
+    public static void findByValueMenu(int option){
+
+        System.out.println("----------lựa chọn tìm kiếm theo giá-----------");
+        System.out.println("    1. Tìm kiếm theo giá (Nhập khoảng từ bao nhiêu đến bao nhiêu) " );
+        System.out.println(" 2. Tìm kiếm theo tên");
+        System.out.println(" 3. Tìm kiếm theo hãng");
+        System.out.println(" 4. Trở về menu Tìm kiếm");
+        System.out.println("chon : ");
+        int choice = request.nextInt();
+
+        do{
+            if(choice >4 || choice < 1){
+                System.out.println("chỉ lựa chọn sẵn có : ");
+                choice = request.nextInt();
+            }
+        }while (choice >4 || choice < 1);
+
+        switch (choice){
+            case 1 :
+                findByPrice(option);
+                break;
+            case 2 :
+                findByName(option);
+                break;
+            case 3 :
+                findByCompany(option);
+                break;
+            case 4 : break;
+        }
+    }
+
+    public static void findByPrice(int option){}
+
+    public static void findByName(int option){}
+
+    public static void findByCompany(int option){}
+
+
+
     public static void main(String[] args) {
        while (action == true){
            menuList();
        }
     }
+
+
+
 }
